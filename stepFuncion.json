@@ -1,0 +1,172 @@
+{
+    "Comment": "Assistente de Delivery Personalizado com Histórico e Aprendizado de Preferências",
+    "StartAt": "RecuperarHistoricoUsuario",
+    "States": {
+        "RecuperarHistoricoUsuario": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:recuperarHistoricoUsuario",
+            "Next": "PerguntarOcasião"
+        },
+        "PerguntarOcasião": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.ocasion",
+                    "StringEquals": "aniversario",
+                    "Next": "SugerirLocalAniversario"
+                },
+                {
+                    "Variable": "$.ocasion",
+                    "StringEquals": "reuniao",
+                    "Next": "SugerirLocalReuniao"
+                },
+                {
+                    "Variable": "$.ocasion",
+                    "StringEquals": "encontro",
+                    "Next": "SugerirLocalEncontro"
+                },
+                {
+                    "Variable": "$.ocasion",
+                    "StringEquals": "casual",
+                    "Next": "SugerirLocalCasual"
+                }
+            ],
+            "Default": "OcasiãoIndefinida"
+        },
+        "SugerirLocalAniversario": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoLocalAniversario",
+            "Next": "PerguntarPreferenciaComida"
+        },
+        "SugerirLocalReuniao": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoLocalReuniao",
+            "Next": "PerguntarPreferenciaComida"
+        },
+        "SugerirLocalEncontro": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoLocalEncontro",
+            "Next": "PerguntarPreferenciaComida"
+        },
+        "SugerirLocalCasual": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoLocalCasual",
+            "Next": "PerguntarPreferenciaComida"
+        },
+        "OcasiãoIndefinida": {
+            "Type": "Fail",
+            "Error": "OcasiãoIndefinida",
+            "Cause": "A ocasião não foi definida."
+        },
+        "PerguntarPreferenciaComida": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.foodPreference",
+                    "StringEquals": "comida brasileira",
+                    "Next": "SugerirComidaBrasileira"
+                },
+                {
+                    "Variable": "$.foodPreference",
+                    "StringEquals": "comida italiana",
+                    "Next": "SugerirComidaItaliana"
+                },
+                {
+                    "Variable": "$.foodPreference",
+                    "StringEquals": "comida japonesa",
+                    "Next": "SugerirComidaJaponesa"
+                },
+                {
+                    "Variable": "$.foodPreference",
+                    "StringEquals": "fast food",
+                    "Next": "SugerirFastFood"
+                }
+            ],
+            "Default": "ComidaIndefinida"
+        },
+        "SugerirComidaBrasileira": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoComidaBrasileira",
+            "Next": "PerguntarPreferenciaBebida"
+        },
+        "SugerirComidaItaliana": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoComidaItaliana",
+            "Next": "PerguntarPreferenciaBebida"
+        },
+        "SugerirComidaJaponesa": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoComidaJaponesa",
+            "Next": "PerguntarPreferenciaBebida"
+        },
+        "SugerirFastFood": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoFastFood",
+            "Next": "PerguntarPreferenciaBebida"
+        },
+        "ComidaIndefinida": {
+            "Type": "Fail",
+            "Error": "ComidaIndefinida",
+            "Cause": "A preferência de comida não foi definida."
+        },
+        "PerguntarPreferenciaBebida": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.drinkPreference",
+                    "StringEquals": "refrigerante",
+                    "Next": "SugerirRefrigerante"
+                },
+                {
+                    "Variable": "$.drinkPreference",
+                    "StringEquals": "suco",
+                    "Next": "SugerirSuco"
+                },
+                {
+                    "Variable": "$.drinkPreference",
+                    "StringEquals": "cerveja",
+                    "Next": "SugerirCerveja"
+                },
+                {
+                    "Variable": "$.drinkPreference",
+                    "StringEquals": "vinho",
+                    "Next": "SugerirVinho"
+                }
+            ],
+            "Default": "BebidaIndefinida"
+        },
+        "SugerirRefrigerante": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoRefrigerante",
+            "Next": "RegistrarEscolhaUsuario"
+        },
+        "SugerirSuco": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoSuco",
+            "Next": "RegistrarEscolhaUsuario"
+        },
+        "SugerirCerveja": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoCerveja",
+            "Next": "RegistrarEscolhaUsuario"
+        },
+        "SugerirVinho": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:sugestaoVinho",
+            "Next": "RegistrarEscolhaUsuario"
+        },
+        "BebidaIndefinida": {
+            "Type": "Fail",
+            "Error": "BebidaIndefinida",
+            "Cause": "A preferência de bebida não foi definida."
+        },
+        "RegistrarEscolhaUsuario": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:registrarEscolhaUsuario",
+            "Next": "Fim"
+        },
+        "Fim": {
+            "Type": "Succeed"
+        }
+    }
+}
